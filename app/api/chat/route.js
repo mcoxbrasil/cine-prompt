@@ -4,14 +4,18 @@ export async function POST(request) {
     const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
-      return Response.json({ error: "API key não encontrada" }, { status: 500 });
+      return Response.json({ error: "Chave não encontrada no ambiente" }, { status: 500 });
+    }
+
+    if (apiKey.length < 20) {
+      return Response.json({ error: "Chave inválida: muito curta" }, { status: 500 });
     }
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
+        "x-api-key": apiKey.trim(),
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify(body)
